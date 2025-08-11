@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Manager</title>
+    <link rel="icon" href="https://i.postimg.cc/6pSKk6zs/image.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/6pSKk6zs/image.png">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Calendar Manager">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="https://i.postimg.cc/6pSKk6zs/image.png" alt="Calendar Manager" class="logo">
+                    <h1>Calendar Manager</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="addPropertyBtn">
+                        <i class="fas fa-plus"></i> Add Property
+                    </button>
+                    <button class="btn btn-secondary" id="installBtn" style="display: none;">
+                        <i class="fas fa-download"></i> Install App
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-tab" data-tab="calendar">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendar</span>
+            </button>
+            <button class="nav-tab" data-tab="inventory">
+                <i class="fas fa-building"></i>
+                <span>Inventory</span>
+            </button>
+            <button class="nav-tab" data-tab="bookings">
+                <i class="fas fa-bookmark"></i>
+                <span>Bookings</span>
+            </button>
+            <button class="nav-tab" data-tab="payments">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </button>
+            <button class="nav-tab" data-tab="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalProperties">0</h3>
+                            <p>Total Properties</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Active Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRevenue">₹0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="pendingPayments">₹0</h3>
+                            <p>Pending Payments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-bookings">
+                    <h2>Recent Bookings</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Guest</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentBookingsTable">
+                                <tr>
+                                    <td colspan="6" class="no-data">No recent bookings</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div class="tab-content" id="calendar">
+                <div class="calendar-header">
+                    <div class="calendar-controls">
+                        <button class="btn btn-secondary" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h2 id="currentMonth">January 2024</h2>
+                        <button class="btn btn-secondary" id="nextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-filters">
+                        <select id="propertyFilter">
+                            <option value="">All Properties</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div class="tab-content" id="inventory">
+                <div class="inventory-header">
+                    <h2>Property Inventory</h2>
+                    <button class="btn btn-primary" id="addPropertyFromInventory">
+                        <i class="fas fa-plus"></i> Add Property
+                    </button>
+                </div>
+                <div class="properties-grid" id="propertiesGrid">
+                    <!-- Properties will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div class="tab-content" id="bookings">
+                <div class="bookings-header">
+                    <h2>All Bookings</h2>
+                    <button class="btn btn-primary" id="addBookingBtn">
+                        <i class="fas fa-plus"></i> New Booking
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Property</th>
+                                <th>Guest</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Days</th>
+                                <th>Rate</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable">
+                            <tr>
+                                <td colspan="12" class="no-data">No bookings found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payments Tab -->
+            <div class="tab-content" id="payments">
+                <div class="payments-header">
+                    <h2>Payment Management</h2>
+                    <button class="btn btn-primary" id="recordPaymentBtn">
+                        <i class="fas fa-plus"></i> Record Payment
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Booking ID</th>
+                                <th>Property</th>
+                                <th>Guest</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTable">
+                            <tr>
+                                <td colspan="8" class="no-data">No payments recorded</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="reports">
+                <div class="reports-header">
+                    <h2>Reports & Analytics</h2>
+                    <div class="date-range">
+                        <input type="date" id="reportFromDate">
+                        <input type="date" id="reportToDate">
+                        <button class="btn btn-primary" id="generateReport">Generate</button>
+                    </div>
+                </div>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Revenue Summary</h3>
+                        <div class="report-content">
+                            <p>Total Revenue: <span id="reportRevenue">₹0</span></p>
+                            <p>Total Bookings: <span id="reportBookings">0</span></p>
+                            <p>Average Rate: <span id="reportAvgRate">₹0</span></p>
+                        </div>
+                    </div>
+                    <div class="report-card">
+                        <h3>Property Performance</h3>
+                        <div class="report-content" id="propertyPerformance">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Property Modal -->
+    <div class="modal" id="addPropertyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Property</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addPropertyForm">
+                <div class="form-group">
+                    <label>Property Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Property Type</label>
+                    <select name="type" required>
+                        <option value="villa">Villa</option>
+                        <option value="room">Room</option>
+                        <option value="apartment">Apartment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Base Price per Day (₹)</label>
+                    <input type="number" name="basePrice" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Amenities</label>
+                    <input type="text" name="amenities" placeholder="WiFi, AC, Pool, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Upload Images</label>
+                    <input type="file" name="images" multiple accept="image/*" id="propertyImages">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Booking Modal -->
+    <div class="modal" id="addBookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Booking</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addBookingForm">
+                <div class="form-group">
+                    <label>Property</label>
+                    <select name="propertyId" required id="bookingPropertySelect">
+                        <option value="">Select Property</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Guest Name</label>
+                    <input type="text" name="guestName" required>
+                </div>
+                <div class="form-group">
+                    <label>Guest Phone</label>
+                    <input type="tel" name="guestPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Guest Email</label>
+                    <input type="email" name="guestEmail">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Check-in Date</label>
+                        <input type="date" name="checkIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Check-out Date</label>
+                        <input type="date" name="checkOut" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Base Rate (₹/day)</label>
+                        <input type="number" name="baseRate" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Negotiated Rate (₹/day)</label>
+                        <input type="number" name="negotiatedRate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Number of Guests</label>
+                    <input type="number" name="guests" value="1" min="1">
+                </div>
+                <div class="booking-summary">
+                    <p>Total Days: <span id="totalDays">0</span></p>
+                    <p>Total Amount: ₹<span id="totalAmount">0</span></p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Record Payment Modal -->
+    <div class="modal" id="recordPaymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Payment</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="recordPaymentForm">
+                <div class="form-group">
+                    <label>Booking</label>
+                    <select name="bookingId" required id="paymentBookingSelect">
+                        <option value="">Select Booking</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Amount (₹)</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select name="method" required>
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="upi">UPI</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Date</label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="2"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Record Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Property Share Modal -->
+    <div class="modal" id="sharePropertyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share Property</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="share-content">
+                <div class="property-preview" id="sharePropertyPreview">
+                    <!-- Property preview will be generated -->
+                </div>
+                <div class="share-options">
+                    <div class="form-group">
+                        <label>Share Link</label>
+                        <div class="share-link-container">
+                            <input type="text" id="shareLink" readonly>
+                            <button class="btn btn-primary" id="copyLinkBtn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="share-buttons">
+                        <button class="btn btn-whatsapp" id="shareWhatsApp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn btn-email" id="shareEmail">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
