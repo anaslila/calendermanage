@@ -25,18 +25,36 @@
                     <h1>Calendar Manager</h1>
                 </div>
                 <div class="header-actions">
-                    <!-- Enhanced Global Search -->
-                    <div class="global-search">
+                    <!-- Enhanced Global Search - Only visible on dashboard -->
+                    <div class="global-search" id="globalSearchContainer">
                         <input type="text" id="globalSearch" placeholder="Search properties, customers, bookings...">
                         <i class="fas fa-search"></i>
                         <div class="search-dropdown" id="searchDropdown">
                             <!-- Search results will be populated here -->
                         </div>
                     </div>
+                    <!-- Tab-specific search bars -->
+                    <div class="tab-search" id="inventorySearchContainer" style="display: none;">
+                        <input type="text" id="inventorySearch" placeholder="Search properties...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="tab-search" id="bookingsSearchContainer" style="display: none;">
+                        <input type="text" id="bookingsSearch" placeholder="Search bookings...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="tab-search" id="customersSearchContainer" style="display: none;">
+                        <input type="text" id="customersSearch" placeholder="Search customers...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="tab-search" id="paymentsSearchContainer" style="display: none;">
+                        <input type="text" id="paymentsSearch" placeholder="Search payments...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
                     <button class="btn btn-primary" id="addPropertyBtn">
                         <i class="fas fa-plus"></i> Add Property
                     </button>
-                    <button class="btn btn-secondary" id="shareAllPropertiesBtn">
+                    <button class="btn btn-secondary" id="shareAllPropertiesBtn" style="display: none;">
                         <i class="fas fa-share-alt"></i> Share All
                     </button>
                     <button class="btn btn-secondary" id="installBtn" style="display: none;">
@@ -87,7 +105,7 @@
             <!-- Dashboard Tab -->
             <div class="tab-content active" id="dashboard">
                 <div class="dashboard-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="viewStatDetails('properties')">
                         <div class="stat-icon">
                             <i class="fas fa-building"></i>
                         </div>
@@ -96,7 +114,7 @@
                             <p>Total Properties</p>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="viewStatDetails('bookings')">
                         <div class="stat-icon">
                             <i class="fas fa-calendar-check"></i>
                         </div>
@@ -105,7 +123,7 @@
                             <p>Active Bookings</p>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="viewStatDetails('customers')">
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
@@ -114,7 +132,7 @@
                             <p>Total Customers</p>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="viewStatDetails('revenue')">
                         <div class="stat-icon">
                             <i class="fas fa-rupee-sign"></i>
                         </div>
@@ -138,11 +156,12 @@
                                     <th>Days/Nights</th>
                                     <th>Amount</th>
                                     <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="recentBookingsTable">
                                 <tr>
-                                    <td colspan="7" class="no-data">No recent bookings</td>
+                                    <td colspan="8" class="no-data">No recent bookings</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -261,7 +280,6 @@
                 <div class="customers-header">
                     <h2>Customer Management</h2>
                     <div class="search-container">
-                        <input type="text" id="customerSearch" placeholder="Search customers...">
                         <button class="btn btn-primary" id="addCustomerBtn">
                             <i class="fas fa-plus"></i> Add Customer
                         </button>
@@ -296,11 +314,12 @@
                                 <th>Duration</th>
                                 <th>Amount</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="historyTable">
                             <tr>
-                                <td colspan="7" class="no-data">No booking history found</td>
+                                <td colspan="8" class="no-data">No booking history found</td>
                             </tr>
                         </tbody>
                     </table>
@@ -327,11 +346,12 @@
                                 <th>Payment Method</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="paymentsTable">
                             <tr>
-                                <td colspan="8" class="no-data">No payments recorded</td>
+                                <td colspan="9" class="no-data">No payments recorded</td>
                             </tr>
                         </tbody>
                     </table>
@@ -349,7 +369,7 @@
                     </div>
                 </div>
                 <div class="reports-grid">
-                    <div class="report-card">
+                    <div class="report-card" onclick="viewReportDetails('revenue')">
                         <h3>Revenue Summary</h3>
                         <div class="report-content">
                             <p>Total Revenue: <span id="reportRevenue">₹0</span></p>
@@ -357,7 +377,7 @@
                             <p>Average Rate: <span id="reportAvgRate">₹0</span></p>
                         </div>
                     </div>
-                    <div class="report-card">
+                    <div class="report-card" onclick="viewReportDetails('property')">
                         <h3>Property Performance</h3>
                         <div class="report-content" id="propertyPerformance">
                             <!-- Will be populated by JavaScript -->
@@ -368,7 +388,6 @@
         </main>
     </div>
 
-    <!-- Modals -->
     <!-- Enhanced Add Property Modal -->
     <div class="modal" id="addPropertyModal">
         <div class="modal-content large-modal">
@@ -422,23 +441,6 @@
                             <label>Number of Bedrooms</label>
                             <input type="number" name="bedrooms" min="0">
                         </div>
-                    </div>
-                    <!-- Google Maps Location -->
-                    <div class="form-group">
-                        <label>Google Maps Location</label>
-                        <div class="maps-container">
-                            <input type="text" id="mapsSearchInput" placeholder="Search for location...">
-                            <button type="button" id="searchMapsBtn" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Search
-                            </button>
-                            <button type="button" id="getCurrentLocationBtn" class="btn btn-secondary">
-                                <i class="fas fa-location-arrow"></i> Use Current Location
-                            </button>
-                        </div>
-                        <div id="mapContainer" style="height: 300px; margin-top: 10px; display: none; border-radius: 8px; overflow: hidden;"></div>
-                        <input type="hidden" name="latitude" id="propertyLatitude">
-                        <input type="hidden" name="longitude" id="propertyLongitude">
-                        <input type="hidden" name="mapsUrl" id="propertyMapsUrl">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -796,6 +798,45 @@
         </div>
     </div>
 
+    <!-- Booking Details Modal -->
+    <div class="modal" id="bookingDetailsModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="bookingDetailsTitle">Booking Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="booking-details-content" id="bookingDetailsContent">
+                <!-- Booking details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Details Modal -->
+    <div class="modal" id="customerDetailsModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="customerDetailsTitle">Customer Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="customer-details-content" id="customerDetailsContent">
+                <!-- Customer details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Details Modal -->
+    <div class="modal" id="paymentDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="paymentDetailsTitle">Payment Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="payment-details-content" id="paymentDetailsContent">
+                <!-- Payment details will be populated here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Share Property Modal -->
     <div class="modal" id="sharePropertyModal">
         <div class="modal-content">
@@ -948,52 +989,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Property Listings Page (Hidden by default) -->
-    <div class="property-listings-page" id="propertyListingsPage" style="display: none;">
-        <div class="listings-header">
-            <div class="listings-controls">
-                <h1>Property Listings</h1>
-                <button class="btn btn-secondary" id="backToAppFromListings">
-                    <i class="fas fa-arrow-left"></i> Back to App
-                </button>
-            </div>
-            <div class="listings-filters">
-                <input type="text" id="listingsSearch" placeholder="Search properties...">
-                <select id="listingsCategoryFilter">
-                    <option value="">All Categories</option>
-                    <option value="basic">Basic</option>
-                    <option value="premium">Premium</option>
-                    <option value="grande">Grande</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="ultra-luxury">Ultra Luxury</option>
-                </select>
-                <select id="listingsLocationFilter">
-                    <option value="">All Locations</option>
-                </select>
-                <input type="number" id="listingsPriceMin" placeholder="Min Price">
-                <input type="number" id="listingsPriceMax" placeholder="Max Price">
-            </div>
-        </div>
-        <div class="listings-grid" id="listingsGrid">
-            <!-- Property listings will be populated here -->
-        </div>
-    </div>
-
-    <!-- Property View Page (Hidden by default) -->
-    <div class="property-view-page" id="propertyViewPage" style="display: none;">
-        <div class="property-view-header">
-            <button class="btn btn-secondary" id="backToApp">
-                <i class="fas fa-arrow-left"></i> Back to App
-            </button>
-            <button class="btn btn-secondary" id="backToListings">
-                <i class="fas fa-arrow-left"></i> Back to Listings
-            </button>
-        </div>
-        <div class="property-view-content" id="propertyViewContent">
-            <!-- Property details will be populated -->
         </div>
     </div>
 
